@@ -16,22 +16,37 @@ local function debuggerTable(id)
 	end})
 end
 
+local function emptyIndex(id)
+	return function(metatable, ...)
+		local args = {...}
+		boxedOutput(function()
+			for _, v in pairs(args) do
+				warn(id .. " tried to index " .. v)
+			end
+		end)
+	end
+end
+
 local function getService(metatable, service)
 	if service == "RunService" then
-		return {
+		return setmetatable({
 			IsStudio = function() return false end,
-		}
+		}, {
+			__index = emptyIndex("RunService")
+		})
 	end
 	
 	if service == "HttpService" then
-		return {
+		return setmetatable({
 			GetAsync = function(metatable, url)
 				boxedOutput(function()
 					warn("ATTEMPTED CALL TO HTTPSERVICE GETASYNC")
 					warn(url)
 				end)
 			end
-		}
+		}, {
+			__index = emptyIndex("HttpService")
+		})
 	end
 	
 	return debuggerTable(service)
