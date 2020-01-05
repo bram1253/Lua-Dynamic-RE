@@ -1,3 +1,4 @@
+-- The ModuleScript needs to return a function, so if it doesn't, wrap it in a function.
 local module = require(workspace.ModuleScript)
 
 
@@ -58,7 +59,7 @@ env.game = setmetatable({
 	service = getService,
 	GetService = getService,
 }, {
-	__index = debuggerTable("game")
+	__index = emptyIndex("game")
 })
 
 module()
